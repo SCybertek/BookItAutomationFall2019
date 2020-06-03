@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class DataAndTimeUtility {
+public class DateTimeUtilities {
     /**
      * This method returns current date as a string.
      * Provide a format as a parameter
