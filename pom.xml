@@ -20,6 +20,23 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <!-- for parallel running Cucumber-->
+                    <parallel>methods</parallel>
+                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                    <includes>
+                        <!-- for  run class or classes-->
+                        <include>**/CucumberRunner*.java</include>
+                    </includes>
+                    <!--this below was false : but we changed it to true so that execution stops when the test will fail -->
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <!--added this for report : in terminal mvn verify to generate -->
                 <groupId>net.masterthought</groupId>
                 <artifactId>maven-cucumber-reporting</artifactId>

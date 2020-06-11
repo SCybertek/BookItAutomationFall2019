@@ -1,5 +1,6 @@
 package com.bookit.step_definitions;
 
+import com.bookit.utilities.ConfigurationReader;
 import com.bookit.utilities.DBUtility;
 import com.bookit.utilities.Driver;
 import com.bookit.utilities.Environment;
@@ -9,7 +10,7 @@ import io.cucumber.java.Before;
 
 public class Hooks {
 
-    //HOOKS without tax will be activated before each and every test!
+    //HOOKS without tag will be activated before each and every test!
 
     /**
      * This hook will be executed only for scenarios that are annotated with @db tag
@@ -33,7 +34,10 @@ public class Hooks {
      */
     @Before("ui")
     public void uiSetup(){
-        Driver.getDriver().manage().window().maximize();
+        String browser = ConfigurationReader.getProperty("browser");
+        if (!browser.contains("ios") && !browser.contains("android")) {
+            Driver.getDriver().manage().window().maximize();
+        }
     }
 
     /**

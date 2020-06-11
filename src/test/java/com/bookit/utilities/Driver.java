@@ -9,11 +9,17 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Driver {
     //same for everyone
     private static final ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
+    //adding these codes from browserStack :
+    public static final String USERNAME = "sofiyanuryyeva1";
+    public static final String AUTOMATE_KEY = "VK5f5DRMvSs8rpTwHnqg";
+    public static final String URL = "https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub"; //this is basic authentication
+
 
     //so no one can create object of Driver class
     //everyone should call static getter method instead
@@ -29,7 +35,8 @@ public class Driver {
      * @return
      */
     public synchronized static WebDriver getDriver() {
-        String GRID_URL = "http://35.171.158.59:4444/wd/hub";
+        //adding selenium grid server that  has docker
+        String GRID_URL = "http://35.175.172.115:4444/wd/hub"; //should be specified in properties.file (for simplicity it is in here)
         //if webdriver object doesn't exist
         //create it
         if (driverPool.get() == null) {
@@ -69,9 +76,9 @@ public class Driver {
                         //such as: OS type, browser, version, etc...
                         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
                         desiredCapabilities.setBrowserName(BrowserType.CHROME);
-                        desiredCapabilities.setPlatform(Platform.ANY);
-
-                        driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
+                        desiredCapabilities.setPlatform(Platform.ANY); //any platform : for android for example etc.
+        //remove webdriver is parent of webdriver›
+                        driverPool.set(new RemoteWebDriver(url, desiredCapabilities)); //url is address of hub
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -96,6 +103,53 @@ public class Driver {
                 case "firefox":
                     WebDriverManager.firefoxdriver().setup();
                     driverPool.set(new FirefoxDriver());
+                    break;
+                case "browser-stack-chrome":
+                    DesiredCapabilities caps = new DesiredCapabilities();
+                    caps.setCapability("browser", "Chrome");
+                    caps.setCapability("browser_version", "83.0");
+                    caps.setCapability("os", "Windows");
+                    caps.setCapability("os_version", "10");
+                    caps.setCapability("resolution", "1920x1080");
+                    caps.setCapability("name", "BookIT Automation");
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL(URL), caps) );
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "browser-stack-ios":
+                    DesiredCapabilities capsIOS = new DesiredCapabilities();
+                    capsIOS.setCapability("browserName", "iPhone");
+                    capsIOS.setCapability("device", "iPhone 8 Plus");
+                    capsIOS.setCapability("realMobile", "true");
+                    capsIOS.setCapability("os_version", "11");
+                    capsIOS.setCapability("name", "Bstack-[Java] Sample Test");
+
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL(URL), capsIOS ));
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+
+                case "browser-stack-android":
+
+                    DesiredCapabilities capsAndroid = new DesiredCapabilities();
+                    capsAndroid.setCapability("browserName", "android");
+                    capsAndroid.setCapability("device", "Samsung Galaxy Note 10");
+                    capsAndroid.setCapability("realMobile", "true");
+                    capsAndroid.setCapability("os_version", "9.0");
+                    capsAndroid.setCapability("name", "BookIt Android Test");
+
+                    try {
+                        driverPool.set(new RemoteWebDriver(new URL(URL), capsAndroid) );
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+
                     break;
                 default:
                     throw new RuntimeException("Wrong browser name!");
